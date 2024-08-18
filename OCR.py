@@ -107,7 +107,7 @@ def main(dir_path,
             # Iterate through each page and convert to image
             for page_num in range(len(pdf_document)):
                 page = pdf_document.load_page(page_num)
-                pix = page.get_pixmap(dpi=1200)
+                pix = page.get_pixmap()
                 pages.append(pix)
 
             # pages = convert_from_path(pdf_file)
