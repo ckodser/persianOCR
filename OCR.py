@@ -21,6 +21,14 @@ The output format should be the following, depending on the number of choices pr
 </choices>
 """
 
+def parse_gpt_output(response):
+    questions_choices=response.split("<question>")
+    questions=[]
+    choices=[]
+    for question_choice in questions_choices:
+        questions.append(question_choice.split("</question>")[0])
+        choices.append(question_choice.split("<choices>")[1].split("</choices>")[0])
+    return questions, choices
 
 def chat_completion(client,
                     messages,
@@ -125,24 +133,28 @@ def main(dir_path,
                     exit(0)
                 # Step 3: Pass img to gpt-4 for mcq extraction
                 try:
-                    message = [
-                        {"type": "text", "text": pre_prompt.format(language)},
-                        {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"}}]
-                    response, _ = chat_completion(client,
-                                                  [{"role": "user",
-                                                    "content": message}],
-                                                  model='gpt-4o',
-                                                  return_text=True,
-                                                  return_usage=True,
-                                                  model_args={
-                                                      "temperature": 0.0,
-                                                      "max_tokens": 4096,
-                                                      "top_p": 1,
-                                                      "frequency_penalty": 0,
-                                                      "presence_penalty": 0})
+                    if 0 == 1:
+                        message = [
+                            {"type": "text", "text": pre_prompt.format(language)},
+                            {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"}}]
+                        response, _ = chat_completion(client,
+                                                      [{"role": "user",
+                                                        "content": message}],
+                                                      model='gpt-4o',
+                                                      return_text=True,
+                                                      return_usage=True,
+                                                      model_args={
+                                                          "temperature": 0.0,
+                                                          "max_tokens": 4096,
+                                                          "top_p": 1,
+                                                          "frequency_penalty": 0,
+                                                          "presence_penalty": 0})
 
-                    with open('openai_response.json', 'w') as file:
-                        json.dump(response, file, indent=4)
+                        with open('openai_response.json', 'w') as file:
+                            json.dump(response, file, indent=4)
+                    else:
+                        with open('openai_response.json', 'r') as file:
+                            response = json.load(file)
                     # Step 4: Process gpt-4 output
                     print(response)
                     questions, choices = parse_gpt_output(response)
