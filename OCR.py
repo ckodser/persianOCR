@@ -1,3 +1,4 @@
+import json
 from os import listdir
 from os.path import isfile, join
 import os
@@ -112,7 +113,7 @@ def main(dir_path,
                 print('Page: {} / {}'.format(page_num, len(pdf_document)))
 
                 page = pdf_document.load_page(page_num)
-                pix = page.get_pixmap(dpi=1000)
+                pix = page.get_pixmap(dpi=200)
                 os.makedirs("{}/imgs".format(dir_path), exist_ok=True)
                 img_name = '{}/imgs/{}_{}.jpg'.format(dir_path, f, page_num)
                 pix.save(img_name)
@@ -140,6 +141,8 @@ def main(dir_path,
                                                       "frequency_penalty": 0,
                                                       "presence_penalty": 0})
 
+                    with open('openai_response.json', 'w') as file:
+                        json.dump(response, file, indent=4)
                     # Step 4: Process gpt-4 output
                     print(response)
                     questions, choices = parse_gpt_output(response)
