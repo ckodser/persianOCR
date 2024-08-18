@@ -21,14 +21,21 @@ The output format should be the following, depending on the number of choices pr
 </choices>
 """
 
+
 def parse_gpt_output(response):
-    questions_choices=response.split("<question>")
-    questions=[]
-    choices=[]
+    questions_choices = response.split("<question>")
+    questions = []
+    choices = []
     for question_choice in questions_choices:
-        questions.append(question_choice.split("</question>")[0])
-        choices.append(question_choice.split("<choices>")[1].split("</choices>")[0])
+        try:
+            question = question_choice.split("</question>")[0]
+            choice = question_choice.split("<choices>")[1].split("</choices>")[0]
+            questions.append(question)
+            choices.append(choice)
+        except:
+            print("failed on this question")
     return questions, choices
+
 
 def chat_completion(client,
                     messages,
