@@ -102,25 +102,20 @@ def main(dir_path,
                 exit(0)
 
             pdf_document = fitz.open(pdf_file)
-            pages = []
+
+            results = list()
 
             # Iterate through each page and convert to image
             for page_num in range(len(pdf_document)):
+                if page_num != 1:
+                    continue
                 page = pdf_document.load_page(page_num)
                 pix = page.get_pixmap()
-                pages.append(pix)
 
-            # pages = convert_from_path(pdf_file)
-
-            # Step 2: Preprocess the image (deskew)
-            results = list()
-            for i, page in enumerate(pages):
-                if i != 1:
-                    continue
-                print('Page: {} / {}'.format(i, len(pages)))
+                print('Page: {} / {}'.format(page_num, len(pdf_document)))
                 os.makedirs("{}/imgs".format(dir_path), exist_ok=True)
-                img_name = '{}/imgs/{}_{}.jpg'.format(dir_path, f, i)
-                page.save(img_name)
+                img_name = '{}/imgs/{}_{}.jpg'.format(dir_path, f, page_num)
+                pix.save(img_name)
                 base64_image = encode_image(img_name)
                 a = input()
                 if a != "y":
@@ -144,6 +139,7 @@ def main(dir_path,
                                                       "presence_penalty": 0})
 
                     # Step 4: Process gpt-4 output
+                    print(response)
                     questions, choices = parse_gpt_output(response)
                     if len(questions) > 0 and len(choices) > 0:
                         for question, options in zip(questions, choices):
@@ -153,7 +149,7 @@ def main(dir_path,
                                        'level': None,
                                        'region_related': None,
                                        'source': f,
-                                       'page_num': i,
+                                       'page_num': page_num,
                                        'response': response,
                                        'question': question,
                                        'options': options,
