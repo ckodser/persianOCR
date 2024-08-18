@@ -186,6 +186,7 @@ def main(dir_path,
                     pass
 
             # store extracted questions
+            os.makedirs("{}/mcq".format(dir_path), exist_ok=True)
             output_file = os.path.join(dir_path, 'mcq', '{}.json'.format(f.split('.')[0]))
             output_data = pd.DataFrame(results)
             output_data.to_json(output_file, orient="records")
