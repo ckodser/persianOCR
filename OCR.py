@@ -7,7 +7,7 @@ import pandas as pd
 import argparse
 import openai
 from openai import OpenAI, APITimeoutError, APIConnectionError, RateLimitError, InternalServerError
-from pdf2image import convert_from_path
+# from pdf2image import convert_from_path
 import fitz
 
 # from utils import parse_gpt_output
