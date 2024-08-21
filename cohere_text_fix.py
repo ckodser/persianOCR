@@ -49,7 +49,7 @@ for filename in files:
             raise ValueError
 
         if index%17==16:
-            time.sleep(60)
+            time.sleep(120)
 
     df['fix_questions'] = pd.Series(fixed_questions, index=df.index)
     df['fixed_options'] = pd.Series(fixed_options, index=df.index)
