@@ -27,7 +27,7 @@ for filename in files:
         try:
             result = co.chat(
                 message=prompt + row['question'], model=model
-            )
+            ).text
             fixed_questions.append(result)
             print("----->", result)
 
@@ -39,7 +39,7 @@ for filename in files:
         try:
             result = co.chat(
                 message=prompt + row['options'], model=model
-            )
+            ).text
             fixed_options.append(result)
             print("----->", result)
 
@@ -49,11 +49,13 @@ for filename in files:
             raise ValueError
 
         if index%17==16:
-            time.sleep(120)
+            time.sleep(60)
 
     df['fix_questions'] = pd.Series(fixed_questions, index=df.index)
     df['fixed_options'] = pd.Series(fixed_options, index=df.index)
 
     df.to_json(join( f"csvs/fixed_{filename}"), orient="records")
+
+    time.sleep(60)
 
 
