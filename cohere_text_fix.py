@@ -22,7 +22,7 @@ for filename in files:
     df = pd.read_json(join("csvs", f"{filename}"))
 
     fixed_questions = []
-
+    fixed_options = []
     for index, row in df.iterrows():
         try:
             result = co.chat(
@@ -36,10 +36,23 @@ for filename in files:
             print(e)
             raise ValueError
 
-        if index%30==29:
+        try:
+            result = co.chat(
+                message=prompt + row['options'], model=model
+            )
+            fixed_options.append(result)
+            print("----->", result)
+
+        except Exception as e:
+            print(row)
+            print(e)
+            raise ValueError
+
+        if index%17==16:
             time.sleep(60)
 
     df['fix_questions'] = pd.Series(fixed_questions, index=df.index)
+    df['fixed_options'] = pd.Series(fixed_options, index=df.index)
 
     df.to_json(join( f"csvs/fixed_{filename}.json"), orient="records")
 
