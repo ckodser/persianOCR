@@ -13,10 +13,10 @@ prompt = "غلط‌های نگارشی در متن زیر را اصلاح کن. 
 co = cohere.Client(
     api_key=cohere_key
 )
-files = [file for file in os.listdir("csvs")]
+files = [file for file in os.listdir("csvs") if file.endswith(".json") and "fixed" not in file]
 
 for filename in files:
-    df = pd.read_json(join("csvs", f"{filename}.json"))
+    df = pd.read_json(join("csvs", f"{filename}"))
 
     fixed_questions = []
 
