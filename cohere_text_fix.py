@@ -54,6 +54,6 @@ for filename in files:
     df['fix_questions'] = pd.Series(fixed_questions, index=df.index)
     df['fixed_options'] = pd.Series(fixed_options, index=df.index)
 
-    df.to_json(join( f"csvs/fixed_{filename}.json"), orient="records")
+    df.to_json(join( f"csvs/fixed_{filename}"), orient="records")
 
 
