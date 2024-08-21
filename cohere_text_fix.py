@@ -1,9 +1,12 @@
 import os
+import time
+
 import pandas as pd
 import os
 from os.path import isfile, join
 
 import cohere
+
 
 with open('cohere_apikey.txt', 'r') as file:
     cohere_key = file.read().strip()
@@ -26,10 +29,15 @@ for filename in files:
                 message=prompt + row['question'], model=model
             )
             fixed_questions.append(result)
+            print("----->", result)
 
         except Exception as e:
             print(row)
+            print(e)
             raise ValueError
+
+        if index%30==29:
+            time.sleep(60)
 
     df['fix_questions'] = pd.Series(fixed_questions, index=df.index)
 
