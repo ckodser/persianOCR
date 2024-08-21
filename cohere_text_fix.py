@@ -36,23 +36,25 @@ for filename in files:
             print(e)
             raise ValueError
 
-        try:
-            result = co.chat(
-                message=prompt + row['options'], model=model
-            ).text
-            fixed_options.append(result)
-            print("----->", result)
+        options_row=[]
+        for option in row['options']:
+            try:
+                result = co.chat(
+                    message=prompt + option, model=model
+                ).text
+                options_row.append(result)
+                print("----->", result)
 
-        except Exception as e:
-            print(row)
-            print(e)
-            raise ValueError
-
-        if index%17==16:
+            except Exception as e:
+                print(row)
+                print(e)
+                raise ValueError
+        fixed_options.append(options_row)
+        if index%7==6:
             time.sleep(60)
 
-    df['fix_questions'] = pd.Series(fixed_questions, index=df.index)
-    df['fixed_options'] = pd.Series(fixed_options, index=df.index)
+    df['question'] = pd.Series(fixed_questions, index=df.index)
+    df['options'] = pd.Series(fixed_options, index=df.index)
 
     df.to_json(join( f"csvs/fixed_{filename}"), orient="records")
 
