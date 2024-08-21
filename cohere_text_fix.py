@@ -1,3 +1,8 @@
+import os
+import pandas as pd
+import os
+from os.path import isfile, join
+
 import cohere
 
 with open('cohere_apikey.txt', 'r') as file:
@@ -8,9 +13,26 @@ prompt = "غلط‌های نگارشی در متن زیر را اصلاح کن. 
 co = cohere.Client(
     api_key=cohere_key
 )
-chat = co.chat(
-    message=prompt + "كدام یك از موارد زیر عرضهكننده مواد اولیه میباشد؟"
-    , model=model
-)
+files = [file for file in os.listdir("csvs")]
 
-print(chat)
+for filename in files:
+    df = pd.read_json(join("csvs", f"{filename}.json"))
+
+    fixed_questions = []
+
+    for index, row in df.iterrows():
+        try:
+            result = co.chat(
+                message=prompt + row['question'], model=model
+            )
+            fixed_questions.append(result)
+
+        except Exception as e:
+            print(row)
+            raise ValueError
+
+    df['fix_questions'] = pd.Series(fixed_questions, index=df.index)
+
+    df.to_json(join( f"csvs/fixed_{filename}.json"), orient="records")
+
+
